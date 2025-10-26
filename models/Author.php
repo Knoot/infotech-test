@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\service\cache\TopAuthorsCacheService;
 use Yii;
 
 /**
@@ -18,7 +19,8 @@ use Yii;
  */
 class Author extends \yii\db\ActiveRecord
 {
-
+    /** @var int[] */
+    private $bookYears = [];
 
     /**
      * {@inheritdoc}
@@ -96,5 +98,40 @@ class Author extends \yii\db\ActiveRecord
     public function getFullName()
     {
         return trim("{$this->lastname} {$this->name} {$this->surname}");
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        if (!empty($changedAttributes)) {
+            $this->clearCache($this->getBookYears());
+        }
+    }
+
+    public function beforeDelete()
+    {
+        $this->bookYears = $this->getBookYears();
+
+        return parent::beforeDelete();
+    }
+
+    public function afterDelete()
+    {
+        parent::afterDelete();
+        $this->clearCache($this->bookYears);
+    }
+
+    private function getBookYears()
+    {
+        return $this->getBooks()
+            ->select('year')
+            ->distinct()
+            ->column()
+        ;
+    }
+
+    private function clearCache(array $years)
+    {
+        TopAuthorsCacheService::invalidateByYears($years);
     }
 }

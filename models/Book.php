@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\service\cache\TopAuthorsCacheService;
 use Yii;
 
 /**
@@ -80,6 +81,13 @@ class Book extends \yii\db\ActiveRecord
     public function getBookAuthors()
     {
         return $this->hasMany(BookAuthor::class, ['book_id' => 'id']);
+    }
+
+    public function afterDelete()
+    {
+        parent::afterDelete();
+
+        TopAuthorsCacheService::invalidateByYears([$this->year]);
     }
 
 }

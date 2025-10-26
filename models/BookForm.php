@@ -6,6 +6,7 @@ use app\base\Model;
 use app\events\AuthorAddedEvent;
 use app\models\Book;
 use app\models\Author;
+use app\service\cache\TopAuthorsCacheService;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 use Yii;
@@ -71,6 +72,8 @@ class BookForm extends \yii\base\Model
             return false;
         }
 
+        /** @var ?int */
+        $oldYear       = $this->book->getOldAttribute('year');
         $transaction   = Yii::$app->db->beginTransaction();
         $pendingEvents = [];
 
@@ -118,6 +121,21 @@ class BookForm extends \yii\base\Model
             }
 
             $transaction->commit();
+
+            $authorsChanged = !empty($toAdd) || !empty($toDelete);
+            $yearChanged    = ($oldYear !== null) && ($oldYear !== (int) $this->book->year);
+
+            $invalidateCacheYears = [];
+
+            if ($authorsChanged || $yearChanged) {
+                $invalidateCacheYears[] = (int) $this->book->year;
+
+                if ($yearChanged) {
+                    $invalidateCacheYears[] = $oldYear;
+                }
+
+                TopAuthorsCacheService::invalidateByYears($invalidateCacheYears);
+            }
 
             foreach ($pendingEvents as $name => $event) {
                 $this->book->trigger($name, $event);
