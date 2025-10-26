@@ -6,6 +6,7 @@ use app\models\Book;
 use app\models\BookForm;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -30,6 +31,16 @@ class BookController extends Controller
                         'create' => ['GET', 'POST'],
                         'update' => ['GET', 'POST'],
                         'delete' => ['POST'],
+                    ],
+                ],
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only'  => ['create', 'update', 'delete'],
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'roles' => ['user'],
+                        ],
                     ],
                 ],
             ]

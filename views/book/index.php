@@ -2,7 +2,6 @@
 
 use app\models\Book;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
@@ -17,7 +16,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Book', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php if (Yii::$app->user->can('createBook')): ?>
+            <?= Html::a('Create Book', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php endif; ?>
     </p>
 
 
@@ -54,10 +55,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
             ],
             [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Book $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                'class'          => ActionColumn::class,
+                'template'       => '{view} {update} {delete}',
+                'visibleButtons' => [
+                    'update' => function ($model, $key, $index) {
+                            return Yii::$app->user->can('updateBook', ['book' => $model]);
+                        },
+                    'delete' => function ($model, $key, $index) {
+                            return Yii::$app->user->can('deleteBook', ['book' => $model]);
+                        },
+                ],
             ],
         ],
     ]); ?>
