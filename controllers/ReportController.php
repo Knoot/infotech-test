@@ -6,6 +6,7 @@ use app\models\Author;
 use app\models\Book;
 use app\models\BookAuthor;
 use app\service\cache\TopAuthorsCacheService;
+use Yii;
 use yii\db\Query;
 
 class ReportController extends \yii\web\Controller
