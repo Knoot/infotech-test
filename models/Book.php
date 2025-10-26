@@ -19,7 +19,7 @@ use Yii;
  */
 class Book extends \yii\db\ActiveRecord
 {
-
+    public const EVENT_AUTHOR_ADDED = 'book.authorAdded';
 
     /**
      * {@inheritdoc}

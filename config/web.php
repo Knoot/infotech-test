@@ -6,7 +6,11 @@ $db = require __DIR__ . '/db.php';
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        \app\bootstrap\EventBootstrap::class,
+        \app\bootstrap\ContainerBootstrap::class,
+    ],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -51,6 +55,12 @@ $config = [
             'rules'           => [
             ],
         ],
+        'smsPilot'     => function () {
+            return new \app\service\smsPilot\SMSPilotService(
+                $_ENV['SMS_PILOT_API_KEY'] ?? '',
+                filter_var($_ENV['SMS_PILOT_API_FROM'] ?? false, FILTER_VALIDATE_BOOL)
+            );
+        },
     ],
     'params' => $params,
 ];

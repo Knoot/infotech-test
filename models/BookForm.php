@@ -2,12 +2,13 @@
 
 namespace app\models;
 
-use Yii;
-use yii\helpers\ArrayHelper;
 use app\base\Model;
+use app\events\AuthorAddedEvent;
 use app\models\Book;
 use app\models\Author;
 use yii\db\Exception;
+use yii\helpers\ArrayHelper;
+use Yii;
 
 class BookForm extends \yii\base\Model
 {
@@ -70,7 +71,8 @@ class BookForm extends \yii\base\Model
             return false;
         }
 
-        $transaction = Yii::$app->db->beginTransaction();
+        $transaction   = Yii::$app->db->beginTransaction();
+        $pendingEvents = [];
 
         try {
             if (!$this->book->save(false)) {
@@ -79,10 +81,11 @@ class BookForm extends \yii\base\Model
 
             $uniqueAuthors = $this->normalizeAuthors($this->authors);
 
-            $incomingIds = [];
+            $incomingIds = $newAuthorIds = [];
             foreach ($uniqueAuthors as $author) {
                 if ($author->isNewRecord || $author->getDirtyAttributes()) {
                     $author->save(false);
+                    $newAuthorIds[$author->id] = true;
                 }
                 $incomingIds[] = $author->id;
             }
@@ -98,6 +101,10 @@ class BookForm extends \yii\base\Model
             foreach ($toAdd as $id) {
                 if ($author = Author::findOne($id)) {
                     $this->book->link('authors', $author);
+
+                    if (!isset($newAuthorIds[$author->id])) {
+                        $pendingEvents[Book::EVENT_AUTHOR_ADDED][] = new AuthorAddedEvent($author);
+                    }
                 }
             }
 
@@ -111,6 +118,10 @@ class BookForm extends \yii\base\Model
             }
 
             $transaction->commit();
+
+            foreach ($pendingEvents as $name => $event) {
+                $this->book->trigger($name, $event);
+            }
 
             return true;
 
