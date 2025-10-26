@@ -14,7 +14,7 @@ $config = [
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => 'qYWrr5D7j5qA-c2D-WGEfX15f0AYSA-p',
+            'cookieValidationKey' => $_ENV['COOKIE_VALIDATION_KEY'] ?? '',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -45,14 +45,12 @@ $config = [
         'authManager'  => [
             'class' => 'yii\rbac\DbManager',
         ],
-        /*
-        'urlManager' => [
+        'urlManager'   => [
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
+            'showScriptName'  => false,
+            'rules'           => [
             ],
         ],
-        */
     ],
     'params' => $params,
 ];
