@@ -35,7 +35,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'title',
             'year',
-            'isbn',
+            [
+                'attribute' => 'isbn',
+                'label'     => 'ISBN',
+                'value'     => function ($model) {
+                    return $model->getIsbnFormatted();
+                }
+            ],
             'description:ntext',
             [
                 'label'  => 'Authors',

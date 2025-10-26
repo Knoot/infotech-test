@@ -2,7 +2,10 @@
 
 namespace app\models;
 
+use app\base\validators\IsbnValidator;
 use app\service\cache\TopAuthorsCacheService;
+use Biblys\Isbn\Isbn;
+use Biblys\Isbn\IsbnParsingException;
 use Yii;
 
 /**
@@ -44,7 +47,7 @@ class Book extends \yii\db\ActiveRecord
             [['title'], 'filter', 'filter' => 'trim'],
             [['photo'], 'url', 'defaultScheme' => 'http'],
             [['isbn'], 'unique'],
-            [['isbn'], 'string', 'max' => 13],
+            [['isbn'], IsbnValidator::class],
         ];
     }
 
@@ -71,6 +74,31 @@ class Book extends \yii\db\ActiveRecord
     public function getAuthors()
     {
         return $this->hasMany(Author::class, ['id' => 'author_id'])->viaTable('book_author', ['book_id' => 'id']);
+    }
+
+    public function getIsbnFormatted(): string
+    {
+        if (!$this->isbn) {
+            return '';
+        }
+
+        try {
+            return Isbn::convertToIsbn13($this->isbn);
+        } catch (IsbnParsingException $e) {
+            return $this->isbn;
+        }
+    }
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            $this->isbn = Isbn::convertToIsbn13($this->isbn);
+            $this->isbn = preg_replace('/[^0-9]/', '', $this->isbn);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**

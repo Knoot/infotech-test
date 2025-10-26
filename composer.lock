@@ -4,8 +4,67 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "65e9830ac4749f39fa03494291016f3a",
+    "content-hash": "e768530bfc30ff24246b47cfcb80074c",
     "packages": [
+        {
+            "name": "biblys/isbn",
+            "version": "3.2.35",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/biblys/isbn.git",
+                "reference": "b3465e25a805661104dbce6ad90d257adfef5f2d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/biblys/isbn/zipball/b3465e25a805661104dbce6ad90d257adfef5f2d",
+                "reference": "b3465e25a805661104dbce6ad90d257adfef5f2d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "ext-json": "*",
+                "ext-simplexml": "*",
+                "guzzlehttp/guzzle": "^7.0",
+                "phpunit/phpunit": "^6 || ^7 || ^8 || ^11 || ^12"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Biblys": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Clement Latzarus",
+                    "email": "hello@clemlatz.dev"
+                }
+            ],
+            "description": "A PHP library to convert and validate ISBNs",
+            "homepage": "https://github.com/biblys/isbn",
+            "keywords": [
+                "ISBN",
+                "book",
+                "ean",
+                "gtin"
+            ],
+            "support": {
+                "issues": "https://github.com/biblys/isbn/issues",
+                "source": "https://github.com/biblys/isbn/tree/3.2.35"
+            },
+            "funding": [
+                {
+                    "url": "https://liberapay.com/clemlatz",
+                    "type": "liberapay"
+                }
+            ],
+            "time": "2022-11-26T00:00:00+00:00"
+        },
         {
             "name": "borales/yii2-phone-input",
             "version": "0.3.0",

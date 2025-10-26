@@ -19,8 +19,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'year')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'isbn')->textInput([
-        'value'     => $model->isbn,
-        'maxlength' => true,
+        'value'     => $model->getIsbnFormatted(),
+        'maxlength' => false,
     ]) ?>
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
