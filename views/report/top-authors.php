@@ -23,6 +23,7 @@ $this->title = "Top {$limit} authors for $year";
             <th>#</th>
             <th>Author</th>
             <th>Books</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -33,10 +34,14 @@ $this->title = "Top {$limit} authors for $year";
                 </td>
                 <td>
                     <?= Html::encode("{$r['lastname']} {$r['name']} {$r['surname']} ") ?>
-                    
                 </td>
                 <td>
                     <?= (int) $r['book_count'] ?>
+                </td>
+                <td>
+                    <?= $this->render('/subscription/_subscribe-button', [
+                        'authorId' => $r['id'],
+                    ]) ?>
                 </td>
             </tr>
         <?php endforeach; ?>

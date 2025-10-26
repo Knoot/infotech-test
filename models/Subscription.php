@@ -35,7 +35,7 @@ class Subscription extends \yii\db\ActiveRecord
             [['phone'], 'default', 'value' => null],
             [['author_id', 'email'], 'required'],
             [['author_id'], 'integer'],
-            [['email'], 'string', 'max' => 25],
+            [['email'], 'string', 'max' => 254],
             [['email'], 'email'],
             [['phone'], 'string', 'max' => 16],
             [['author_id', 'email'], 'unique', 'targetAttribute' => ['author_id', 'email']],

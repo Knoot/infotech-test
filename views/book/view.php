@@ -49,8 +49,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     foreach ($model->authors as $author) {
                         $fio = htmlspecialchars($author->getFullName());
 
-                        $lines[] = Html::tag('div', $fio, ['class' => 'author-item']);
+                        $subscribeButton = $this->render('/subscription/_subscribe-button', [
+                            'authorId' => $author->id,
+                        ]);
+
+                        $lines[] = Html::tag('div', $fio . ' ' . $subscribeButton, ['class' => 'author-item']);
                     }
+
 
                     return implode('', $lines);
                 },
